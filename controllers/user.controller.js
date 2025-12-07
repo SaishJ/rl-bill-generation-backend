@@ -2,6 +2,8 @@ import UserModel from "../models/User.js";
 import { errorHandler } from "../utils/errorHandler.utils.js";
 import bcrypt from "bcrypt";
 import { generateJwt } from "../utils/jwt.util.js";
+import { sendMail } from "../utils/mail.util.js";
+import { loginTemplate } from "../templates/loginTemplate.js";
 
 export const loginUser = async (req, res) => {
   try {
@@ -26,6 +28,8 @@ export const loginUser = async (req, res) => {
       email: user.email,
       name: user.name,
     });
+
+    await sendMail(user.email, "Login successfully", loginTemplate(user));
 
     // Success
     return res.json({
