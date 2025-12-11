@@ -29,7 +29,7 @@ export const loginUser = async (req, res) => {
       name: user.name,
     });
 
-    await sendMail(user.email, "Login successfully", loginTemplate(user));
+    // await sendMail(user.email, "Login successfully", loginTemplate(user));
 
     // Success
     return res.json({
