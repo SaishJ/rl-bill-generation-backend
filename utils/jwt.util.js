@@ -5,3 +5,9 @@ export const generateJwt = (data) => {
   const expiresIn = "10d";
   return jwt.sign(data, secretKey, { expiresIn });
 };
+
+export const generateRefreshToken = (data) => {
+  const secretKey = process.env.REFRESH_SECRET;
+  const expiresIn = "365d";
+  return jwt.sign(data, secretKey, { expiresIn });
+};

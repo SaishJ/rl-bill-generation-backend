@@ -1,7 +1,7 @@
 import UserModel from "../models/User.js";
 import { errorHandler } from "../utils/errorHandler.utils.js";
 import bcrypt from "bcrypt";
-import { generateJwt } from "../utils/jwt.util.js";
+import { generateJwt, generateRefreshToken } from "../utils/jwt.util.js";
 import { sendMail } from "../utils/mail.util.js";
 import { loginTemplate } from "../templates/loginTemplate.js";
 
@@ -19,11 +19,18 @@ export const loginUser = async (req, res) => {
     // Check valid email and password
     const matchPassword = await bcrypt.compare(password, user.password);
     if (user.email !== email || !matchPassword) {
-      return errorHandler(res, 401, "Invalid email or password");
+      return errorHandler(res, 400, "Invalid email or password");
     }
 
     // Generate Jwt
     const token = generateJwt({
+      id: user._id,
+      email: user.email,
+      name: user.name,
+    });
+
+    // Generate Refresh Token
+    const refreshToken = generateRefreshToken({
       id: user._id,
       email: user.email,
       name: user.name,
@@ -39,6 +46,7 @@ export const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         access_token: token,
+        refresh_token: refreshToken,
       },
     });
   } catch (error) {
@@ -53,7 +61,7 @@ export const registerUser = async (req, res) => {
     const data = req.body;
     const userExists = await UserModel.findOne({ email: data?.email });
     if (userExists) {
-      return errorHandler(res, 401, "User already exists");
+      return errorHandler(res, 409, "User already exists");
     }
     const hashPassword = await bcrypt.hash(data.password, 10);
     const user = await UserModel.create({ ...data, password: hashPassword });

@@ -5,7 +5,7 @@ export const authJWT = (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) {
-    return errorHandler(res, 401, "Access token missing");
+    return errorHandler(res, 401, "Access token is missing");
   }
 
   try {
