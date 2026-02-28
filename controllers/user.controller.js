@@ -23,19 +23,14 @@ export const loginUser = async (req, res) => {
       return errorHandler(res, 400, "Invalid email or password");
     }
 
-    // Generate Jwt
-    const token = generateJwt({
+    // Generate Tokes
+    const userPayload = {
       id: user._id,
       email: user.email,
       name: user.name,
-    });
-
-    // Generate Refresh Token
-    const refreshToken = generateRefreshToken({
-      id: user._id,
-      email: user.email,
-      name: user.name,
-    });
+    };
+    const token = generateJwt(userPayload);
+    const refreshToken = generateRefreshToken(userPayload);
 
     user.refresh_token = refreshToken;
     await user.save();
@@ -90,8 +85,6 @@ export const refreshToken = async (req, res) => {
     const decode = jwt.verify(refresh_token, process.env.REFRESH_SECRET);
 
     const user = await UserModel.findById(decode.id);
-
-    console.log(user);
 
     if (!user || user.refresh_token !== refresh_token) {
       return errorHandler(res, 403, "Invalid refresh token");
