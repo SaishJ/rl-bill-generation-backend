@@ -12,7 +12,7 @@ const billSchema = new Schema(
   {
     billType: {
       type: String,
-      enum: ["gst", "non_gst"],
+      enum: ["gst", "non-gst"],
       required: true,
     },
     name: String,
