@@ -35,7 +35,7 @@ export const loginUser = async (req, res) => {
     user.refresh_token = refreshToken;
     await user.save();
 
-    // await sendMail(user.email, "Login successfully", loginTemplate(user));
+    await sendMail(user.email, "Login successfully", loginTemplate(user));
 
     // Success
     return res.json({
