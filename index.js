@@ -13,10 +13,16 @@ dotenv.config();
 
 connectDb();
 
-const PORT = process.env.PORT;
+app.get("/", (req, res) => {
+  res.send("Backend Running");
+});
+
+const PORT = process.env.PORT || 5000;
 
 app.use("/api/auth", userRouter);
 
 app.use("/api/bill", billRouter);
 
-app.listen(PORT, () => console.log("Server listening on port:", PORT));
+app.listen(PORT, "0.0.0.0", () =>
+  console.log("Server listening on port:", PORT)
+);
